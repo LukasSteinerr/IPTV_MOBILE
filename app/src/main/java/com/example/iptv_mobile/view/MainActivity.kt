@@ -1,4 +1,4 @@
-package com.example.iptv_mobile
+package com.example.iptv_mobile.view
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -7,10 +7,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 import android.widget.Button
+import com.example.iptv_mobile.model.ObjectBox as ModelObjectBox
 import io.objectbox.Box
 import io.objectbox.android.Admin
 import io.objectbox.kotlin.boxFor
 
+import com.example.iptv_mobile.Note
+import com.example.iptv_mobile.R
 class MainActivity : AppCompatActivity() {
     private lateinit var noteBox: Box<Note>
 
@@ -24,7 +27,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        noteBox = ObjectBox.store.boxFor()
+        noteBox = ModelObjectBox.boxStore.boxFor()
 
         // Add some sample notes
         if (noteBox.isEmpty) {
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.adminButton).setOnClickListener {
-            Admin(ObjectBox.store).start(this)
+            Admin(ModelObjectBox.boxStore).start(this)
         }
     }
 }
