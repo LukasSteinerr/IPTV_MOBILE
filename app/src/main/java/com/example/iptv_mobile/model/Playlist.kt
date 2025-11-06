@@ -31,8 +31,3 @@ data class Playlist(
     val typeName: String
         get() = if (isM3u) "M3U" else "Xtream"
 }
-
-object PlaylistTypeConstants {
-    const val m3u = 0
-    const val xtream = 1
-}

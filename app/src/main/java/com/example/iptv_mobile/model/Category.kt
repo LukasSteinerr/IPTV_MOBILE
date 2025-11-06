@@ -32,9 +32,3 @@ data class Category(
     val isSeries: Boolean
         get() = contentType == ContentType.series
 }
-
-object ContentType {
-    const val liveTV = 0
-    const val movie = 1
-    const val series = 2
-}

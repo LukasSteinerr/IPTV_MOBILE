@@ -1,6 +1,7 @@
 package com.example.iptv_mobile.model
 
 import android.content.Context
+import com.example.iptv_mobile.model.MyObjectBox
 import io.objectbox.BoxStore
 
 object ObjectBox {
@@ -9,7 +10,7 @@ object ObjectBox {
         private set
 
     fun init(context: Context) {
-        boxStore = com.example.iptv_mobile.MyObjectBox.builder()
+        boxStore = MyObjectBox.builder()
             .androidContext(context.applicationContext)
             .build()
     }
