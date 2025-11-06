@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "dart": {
+      "command": "C:\\flutter_windows_3.29.2-stable\\flutter\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+      "args": [
+        "mcp-server"
+      ]
+    }
+  }
+}
