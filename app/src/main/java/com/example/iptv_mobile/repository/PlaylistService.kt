@@ -157,4 +157,8 @@ class PlaylistService {
             ObjectBox.boxStore.removeAllObjects()
         }
     }
+
+    fun hasPlaylists(): Boolean {
+        return playlistBox.count() > 0
+    }
 }
