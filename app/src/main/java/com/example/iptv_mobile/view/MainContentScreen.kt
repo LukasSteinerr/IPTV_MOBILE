@@ -34,17 +34,24 @@ fun MainContentScreen() {
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar(
-        containerColor = Color.DarkGray,
+        containerColor = Color(0xFF121212), // Dark background matching the image
         contentColor = Color.White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
         bottomNavScreens.forEach { screen ->
+            val selected = currentRoute == screen.route
             NavigationBarItem(
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
-                label = { Text(screen.title) },
-                selected = currentRoute == screen.route,
+                icon = {
+                    Icon(
+                        imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+                        contentDescription = screen.title,
+                        tint = Color.White // All icons are white
+                    )
+                },
+                label = { /* Removed label to match the icon-only style in the image */ },
+                selected = selected,
                 onClick = {
                     navController.navigate(screen.route) {
                         // Avoid building up a large stack of destinations on the back stack as users select items
