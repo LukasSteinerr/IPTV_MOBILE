@@ -42,3 +42,13 @@
 [debug] [2025-11-07T18:37:06.612Z] > authorizing via signed-in user (simlucke@gmail.com)
 [debug] [2025-11-07T19:15:05.503Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
 [debug] [2025-11-07T19:15:05.517Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T21:57:53.525Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T21:57:53.618Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T22:14:00.314Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T22:14:00.327Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T22:21:44.962Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T22:21:44.971Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T22:22:26.673Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T22:22:26.681Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T22:29:12.853Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T22:29:12.861Z] > authorizing via signed-in user (simlucke@gmail.com)

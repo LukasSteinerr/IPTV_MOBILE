@@ -94,7 +94,7 @@ fun MainContentNavHost(
         startDestination = Screen.Home.route,
         modifier = modifier
     ) {
-        composable(Screen.Home.route) { MoviesScreen() }
+        composable(Screen.Home.route) { AppContentScreen() }
         composable(Screen.Downloads.route) { DownloadsScreen() }
         composable(Screen.MyList.route) { FavoritesScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }

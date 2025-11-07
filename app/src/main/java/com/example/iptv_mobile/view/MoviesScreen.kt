@@ -34,41 +34,13 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun MoviesScreen() {
-    val tabs = listOf("Movies", "Tv Series","Live TV", )
-    var selectedTab by remember { mutableStateOf("Movies") }
-
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
             .verticalScroll(scrollState)
     ) {
-        // Spacer to replace TopBar height
-        Spacer(Modifier.height(12.dp))
-
-        // --- Tabs and Search Icon ---
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            tabs.forEach { tab ->
-                Text(
-                    text = tab,
-                    color = if (tab == selectedTab) Color.White else Color.Gray,
-                    fontWeight = if (tab == selectedTab) FontWeight.Bold else FontWeight.Normal,
-                    modifier = Modifier.clickable { selectedTab = tab }
-                )
-            }
-            // Search Icon moved here
-            IconButton(onClick = { /* Handle search click */ }) {
-                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
 
         // --- Featured Movie Section (LazyRow) ---
         FeaturedSection()
