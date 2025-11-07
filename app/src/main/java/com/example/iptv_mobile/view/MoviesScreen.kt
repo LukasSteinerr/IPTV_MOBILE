@@ -109,9 +109,6 @@ fun TopBar(onBackClick: () -> Unit) {
             IconButton(onClick = { }) {
                 Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
             }
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
-            }
         }
     }
 }
@@ -202,12 +199,6 @@ fun MovieCategoryRow(title: String) {
                             modifier = Modifier.fillMaxSize()
                         )
                         // Play icon overlay
-                        Icon(
-                            imageVector = Icons.Default.PlayCircle,
-                            contentDescription = "Play",
-                            tint = Color.White.copy(alpha = 0.8f),
-                            modifier = Modifier.size(48.dp)
-                        )
                     }
                 }
             }
