@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -31,18 +33,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun MoviesScreen() {
+fun MoviesScreen(onBackClick: () -> Unit) {
     val tabs = listOf("TV Series", "Movies", "Animes", "Kids", "News")
     var selectedTab by remember { mutableStateOf("Movies") }
 
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .verticalScroll(scrollState)
     ) {
         // --- Top Bar ---
-        TopBar()
+        TopBar(onBackClick = onBackClick)
 
         Spacer(Modifier.height(12.dp))
 
@@ -69,28 +73,37 @@ fun MoviesScreen() {
         Spacer(Modifier.height(20.dp))
 
         // --- Continue Watch Section ---
-        ContinueWatchingSection()
+        MovieCategoryRow(title = "Continue Watch")
+
+        Spacer(Modifier.height(20.dp))
+
+        // --- New Movies Section ---
+        MovieCategoryRow(title = "New Movies")
+
+        Spacer(Modifier.height(20.dp))
+
+        // --- Action Section ---
+        MovieCategoryRow(title = "Action")
+
+        Spacer(Modifier.height(20.dp))
+
+        // --- Fantasy Section ---
+        MovieCategoryRow(title = "Fantasy")
 
         Spacer(Modifier.weight(1f))
     }
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Profile picture placeholder (using Coil)
-        Image(
-            painter = rememberAsyncImagePainter("https://picsum.photos/40/40"),
-            contentDescription = "Profile",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-        )
+        IconButton(onClick = onBackClick) {
+            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+        }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { }) {
@@ -147,51 +160,55 @@ fun FeaturedSection() {
 }
 
 @Composable
-fun ContinueWatchingSection() {
-    // Using placeholder URLs for images
+fun MovieCategoryRow(title: String) {
+    // Using placeholder URLs for images. In a real app, this list would be fetched based on the title/category.
     val movieUrls = listOf(
         "https://image.tmdb.org/t/p/w600_and_h900_bestv2/5Gr4amaB1xxeYAEMOdrVutaWwgz.jpg",
         "https://image.tmdb.org/t/p/w600_and_h900_bestv2/q8dWfc4JwQuv3HayIZeO84jAXED.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ecflk7AZf0ij205yDswjlvdxlCO.jpg"
+        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ecflk7AZf0ij205yDswjlvdxlCO.jpg",
+        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
+        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kdkk7OBnIL1peW2zwcAAp6O54Jo.jpg"
     )
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text("Continue Watch", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        Text("See all", color = Color.Gray, fontSize = 14.sp)
-    }
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("See all", color = Color.Gray, fontSize = 14.sp)
+        }
 
-    Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(12.dp))
 
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(movieUrls) { url ->
-            Card(
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(160.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(movieUrls) { url ->
+                Card(
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(160.dp)
                 ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(url),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    // Play icon overlay
-                    Icon(
-                        imageVector = Icons.Default.PlayCircle,
-                        contentDescription = "Play",
-                        tint = Color.White.copy(alpha = 0.8f),
-                        modifier = Modifier.size(48.dp)
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(url),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        // Play icon overlay
+                        Icon(
+                            imageVector = Icons.Default.PlayCircle,
+                            contentDescription = "Play",
+                            tint = Color.White.copy(alpha = 0.8f),
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
                 }
             }
         }

@@ -40,3 +40,5 @@
 [debug] [2025-11-07T18:29:55.071Z] > authorizing via signed-in user (simlucke@gmail.com)
 [debug] [2025-11-07T18:37:06.607Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
 [debug] [2025-11-07T18:37:06.612Z] > authorizing via signed-in user (simlucke@gmail.com)
+[debug] [2025-11-07T19:15:05.503Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-07T19:15:05.517Z] > authorizing via signed-in user (simlucke@gmail.com)
