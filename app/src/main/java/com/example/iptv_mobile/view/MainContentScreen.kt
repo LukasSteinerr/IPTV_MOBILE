@@ -19,15 +19,14 @@ import com.example.iptv_mobile.navigation.Screen
 import com.example.iptv_mobile.navigation.bottomNavScreens
 
 @Composable
-fun MainContentScreen(onBackClick: () -> Unit) {
+fun MainContentScreen() {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->
         MainContentNavHost(
             navController = navController,
-            modifier = Modifier.padding(paddingValues),
-            onBackClick = onBackClick
+            modifier = Modifier.padding(paddingValues)
         )
     }
 }
@@ -73,15 +72,14 @@ fun BottomNavigationBar(navController: NavHostController) {
 @Composable
 fun MainContentNavHost(
     navController: NavHostController,
-    modifier: Modifier,
-    onBackClick: () -> Unit
+    modifier: Modifier
 ) {
     NavHost(
         navController = navController,
         startDestination = Screen.Movies.route,
         modifier = modifier
     ) {
-        composable(Screen.Movies.route) { MoviesScreen(onBackClick = onBackClick) }
+        composable(Screen.Movies.route) { MoviesScreen() }
         composable(Screen.TvShows.route) { TvShowsScreen() }
         composable(Screen.LiveTv.route) { LiveTvScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }

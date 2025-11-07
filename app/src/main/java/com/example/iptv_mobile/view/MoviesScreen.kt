@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun MoviesScreen(onBackClick: () -> Unit) {
-    val tabs = listOf("TV Series", "Movies", "Animes", "Kids", "News")
+fun MoviesScreen() {
+    val tabs = listOf("Movies", "Tv Series","Live TV", )
     var selectedTab by remember { mutableStateOf("Movies") }
 
     val scrollState = rememberScrollState()
@@ -45,14 +45,13 @@ fun MoviesScreen(onBackClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .verticalScroll(scrollState)
     ) {
-        // --- Top Bar ---
-        TopBar(onBackClick = onBackClick)
-
+        // Spacer to replace TopBar height
         Spacer(Modifier.height(12.dp))
 
-        // --- Tabs ---
+        // --- Tabs and Search Icon ---
         Row(
             modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             tabs.forEach { tab ->
@@ -62,6 +61,10 @@ fun MoviesScreen(onBackClick: () -> Unit) {
                     fontWeight = if (tab == selectedTab) FontWeight.Bold else FontWeight.Normal,
                     modifier = Modifier.clickable { selectedTab = tab }
                 )
+            }
+            // Search Icon moved here
+            IconButton(onClick = { /* Handle search click */ }) {
+                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
             }
         }
 
@@ -94,24 +97,6 @@ fun MoviesScreen(onBackClick: () -> Unit) {
     }
 }
 
-@Composable
-fun TopBar(onBackClick: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

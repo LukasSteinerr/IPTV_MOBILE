@@ -50,9 +50,7 @@ class MainActivity : ComponentActivity() {
                         }
                         selectedPlaylist != null -> {
                             // Navigate to the main content screen
-                            MainContentScreen(
-                                onBackClick = { selectedPlaylist = null }
-                            )
+                            MainContentScreen()
                         }
                         else -> {
                             MyPlaylistsScreen(
