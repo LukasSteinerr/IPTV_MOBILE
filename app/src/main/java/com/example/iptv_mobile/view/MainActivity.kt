@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.iptv_mobile.model.Playlist
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,22 +34,33 @@ class MainActivity : ComponentActivity() {
                     val playlistViewModel: PlaylistViewModel = viewModel(factory = PlaylistViewModelFactory(playlistService))
                     val playlists by playlistViewModel.playlists.collectAsState()
                     
-                    // Use a local state to manage navigation after initial check
+                    // Use local state to manage navigation
                     var showAddPlaylist by remember { mutableStateOf(hasPlaylists.not()) }
+                    var selectedPlaylist by remember { mutableStateOf<Playlist?>(null) }
 
-                    if (showAddPlaylist) {
-                        AddPlaylistScreen(
-                            playlistService = playlistService,
-                            onPlaylistAdded = {
-                                playlistViewModel.loadPlaylists()
-                                showAddPlaylist = false
-                            }
-                        )
-                    } else {
-                        MyPlaylistsScreen(
-                            playlists = playlists,
-                            playlistService = playlistService
-                        )
+                    when {
+                        showAddPlaylist -> {
+                            AddPlaylistScreen(
+                                playlistService = playlistService,
+                                onPlaylistAdded = {
+                                    playlistViewModel.loadPlaylists()
+                                    showAddPlaylist = false
+                                }
+                            )
+                        }
+                        selectedPlaylist != null -> {
+                            // Navigate to the main content screen
+                            MainContentScreen()
+                        }
+                        else -> {
+                            MyPlaylistsScreen(
+                                playlists = playlists,
+                                playlistService = playlistService,
+                                onPlaylistClick = { playlist ->
+                                    selectedPlaylist = playlist
+                                }
+                            )
+                        }
                     }
                 }
             }
