@@ -6,6 +6,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -112,37 +115,34 @@ fun FeaturedSection() {
     val lazyListState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
 
-    val centerItemIndex by remember {
-        derivedStateOf {
-            val layoutInfo = lazyListState.layoutInfo
-            val visibleItemsInfo = layoutInfo.visibleItemsInfo
-            val listCenter = layoutInfo.viewportEndOffset / 2
-            visibleItemsInfo.minByOrNull { kotlin.math.abs((it.offset + it.size / 2) - listCenter) }?.index ?: 0
-        }
-    }
+    val pagerState = rememberPagerState(pageCount = { featuredUrls.size })
 
-    LazyRow(
-        state = lazyListState,
-        flingBehavior = snapBehavior,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp) // Add horizontal padding to show partial cards
-    ) {
-        itemsIndexed(featuredUrls) { index, url ->
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        HorizontalPager(
+            state = pagerState,
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            pageSpacing = 16.dp
+        ) { page ->
             Card(
                 shape = RoundedCornerShape(16.dp),
-                border = if (index == centerItemIndex) BorderStroke(2.dp, Color.White) else null,
+                border = if (pagerState.currentPage == page) BorderStroke(2.dp, Color.White) else null,
                 modifier = Modifier
-                    .fillParentMaxWidth(0.85f) // Take up most of the screen width
+                    .fillMaxWidth()
                     .aspectRatio(0.75f) // Make it longer vertically (taller than wide)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(url),
+                    painter = rememberAsyncImagePainter(featuredUrls[page]),
                     contentDescription = "Featured Movie",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
             }
         }
+        Spacer(Modifier.height(16.dp))
+        PageIndicator(
+            numberOfPages = featuredUrls.size,
+            selectedPage = pagerState.currentPage
+        )
     }
 }
 
@@ -194,6 +194,28 @@ fun ContinueWatchingSection() {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PageIndicator(numberOfPages: Int, selectedPage: Int) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (i in 0 until numberOfPages) {
+            val width by animateDpAsState(
+                targetValue = if (i == selectedPage) 24.dp else 8.dp,
+                label = "Indicator Width"
+            )
+            Box(
+                modifier = Modifier
+                    .height(8.dp)
+                    .width(width)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (i == selectedPage) Color.White else Color.Gray)
+            )
         }
     }
 }
