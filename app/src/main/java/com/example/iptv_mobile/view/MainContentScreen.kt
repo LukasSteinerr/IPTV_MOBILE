@@ -17,16 +17,27 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.iptv_mobile.navigation.Screen
 import com.example.iptv_mobile.navigation.bottomNavScreens
+import com.example.iptv_mobile.model.Playlist
+import com.example.iptv_mobile.repository.PlaylistService
 
 @Composable
-fun MainContentScreen() {
+fun MainContentScreen(
+    playlists: List<Playlist>,
+    playlistService: PlaylistService,
+    selectedPlaylist: Playlist?,
+    onPlaylistClick: (Playlist) -> Unit
+) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->
         MainContentNavHost(
             navController = navController,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            playlists = playlists,
+            playlistService = playlistService,
+            selectedPlaylist = selectedPlaylist,
+            onPlaylistClick = onPlaylistClick
         )
     }
 }
@@ -72,16 +83,20 @@ fun BottomNavigationBar(navController: NavHostController) {
 @Composable
 fun MainContentNavHost(
     navController: NavHostController,
-    modifier: Modifier
+    modifier: Modifier,
+    playlists: List<Playlist>,
+    playlistService: PlaylistService,
+    selectedPlaylist: Playlist?,
+    onPlaylistClick: (Playlist) -> Unit
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Movies.route,
+        startDestination = Screen.Home.route,
         modifier = modifier
     ) {
-        composable(Screen.Movies.route) { MoviesScreen() }
-        composable(Screen.TvShows.route) { TvShowsScreen() }
-        composable(Screen.LiveTv.route) { LiveTvScreen() }
+        composable(Screen.Home.route) { MoviesScreen() }
+        composable(Screen.Downloads.route) { DownloadsScreen() }
+        composable(Screen.MyList.route) { FavoritesScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }
     }
 }

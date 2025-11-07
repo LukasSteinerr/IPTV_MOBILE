@@ -38,8 +38,8 @@ class MainActivity : ComponentActivity() {
                     var showAddPlaylist by remember { mutableStateOf(hasPlaylists.not()) }
                     var selectedPlaylist by remember { mutableStateOf<Playlist?>(null) }
 
-                    when {
-                        showAddPlaylist -> {
+                    when (showAddPlaylist) {
+                        true -> {
                             AddPlaylistScreen(
                                 playlistService = playlistService,
                                 onPlaylistAdded = {
@@ -48,14 +48,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        selectedPlaylist != null -> {
-                            // Navigate to the main content screen
-                            MainContentScreen()
-                        }
-                        else -> {
-                            MyPlaylistsScreen(
+                        false -> {
+                            MainContentScreen(
                                 playlists = playlists,
                                 playlistService = playlistService,
+                                selectedPlaylist = selectedPlaylist,
                                 onPlaylistClick = { playlist ->
                                     selectedPlaylist = playlist
                                 }
