@@ -160,10 +160,24 @@ fun MovieCategoryRow(title: String, movies: List<Movie>) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text("See all", color = Color.Gray, fontSize = 14.sp)
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+            Text(
+                text = "See all",
+                color = Color.Gray,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 8.dp)
+            )
         }
 
         Spacer(Modifier.height(12.dp))
