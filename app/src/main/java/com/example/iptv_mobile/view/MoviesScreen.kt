@@ -35,6 +35,8 @@ import kotlinx.coroutines.launch
 import androidx.navigation.NavHostController
 
 import com.example.iptv_mobile.model.Category
+import com.example.iptv_mobile.repository.TMDBImageProvider
+import com.example.iptv_mobile.view.components.MovieCard
 import com.example.iptv_mobile.model.Movie
 import com.example.iptv_mobile.model.Playlist
 import com.example.iptv_mobile.navigation.Screen
@@ -52,6 +54,7 @@ fun MoviesScreen(
     var isLoading by remember { mutableStateOf(true) }
 
     val coroutineScope = rememberCoroutineScope()
+    val tmdbImageProvider = remember { TMDBImageProvider.getInstance() }
 
     LaunchedEffect(playlist.id) {
         coroutineScope.launch {
@@ -103,7 +106,11 @@ fun MoviesScreen(
             Column(modifier = Modifier.verticalScroll(scrollState)) {
                 // --- Featured Movie Section (LazyRow) ---
                 if (featuredMovies.isNotEmpty()) {
-                    FeaturedSection(movies = featuredMovies, navController = navController)
+                    FeaturedSection(
+                        movies = featuredMovies,
+                        navController = navController,
+                        tmdbImageProvider = tmdbImageProvider
+                    )
                 }
 
                 Spacer(Modifier.height(20.dp))
@@ -111,7 +118,12 @@ fun MoviesScreen(
                 categories.forEach { category ->
                     val movies = moviesByCategory[category.id] ?: emptyList()
                     if (movies.isNotEmpty()) {
-                        MovieCategoryRow(title = category.name, movies = movies, navController = navController)
+                        MovieCategoryRow(
+                            title = category.name,
+                            movies = movies,
+                            navController = navController,
+                            tmdbImageProvider = tmdbImageProvider
+                        )
                         Spacer(Modifier.height(20.dp))
                     }
                 }
@@ -123,7 +135,11 @@ fun MoviesScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FeaturedSection(movies: List<Movie>, navController: NavHostController) {
+fun FeaturedSection(
+    movies: List<Movie>,
+    navController: NavHostController,
+    tmdbImageProvider: TMDBImageProvider
+) {
     val lazyListState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
 
@@ -146,7 +162,9 @@ fun FeaturedSection(movies: List<Movie>, navController: NavHostController) {
                     }
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(movies[page].coverUrl),
+                    painter = rememberAsyncImagePainter(
+                        tmdbImageProvider.getBackdropUrl(movies[page].featuredPosterUrl) ?: movies[page].coverUrl
+                    ),
                     contentDescription = "Featured Movie",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
@@ -162,7 +180,12 @@ fun FeaturedSection(movies: List<Movie>, navController: NavHostController) {
 }
 
 @Composable
-fun MovieCategoryRow(title: String, movies: List<Movie>, navController: NavHostController) {
+fun MovieCategoryRow(
+    title: String,
+    movies: List<Movie>,
+    navController: NavHostController,
+    tmdbImageProvider: TMDBImageProvider
+) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -192,28 +215,15 @@ fun MovieCategoryRow(title: String, movies: List<Movie>, navController: NavHostC
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(movies) { movie ->
-                Card(
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(160.dp)
-                        .clickable {
-                            navController.navigate(Screen.MovieDetails.createRoute(movie.id))
-                        }
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(movie.coverUrl),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        // Play icon overlay
-                    }
-                }
+                MovieCard(
+                    movie = movie,
+                    tmdbImageProvider = tmdbImageProvider,
+                    onClick = {
+                        navController.navigate(Screen.MovieDetails.createRoute(movie.id))
+                    },
+                    modifier = Modifier.width(120.dp),
+                    showTitle = true
+                )
             }
         }
     }
