@@ -21,6 +21,9 @@ sealed class Screen(
     object Movies : Screen("movies", "Movies", Icons.Filled.MovieCreation, Icons.Outlined.MovieCreation)
     object TvShows : Screen("tv_shows", "Tv Shows", Icons.Filled.Subscriptions, Icons.Outlined.Subscriptions)
     object LiveTv : Screen("live_tv", "Live TV", Icons.Filled.Sensors, Icons.Outlined.Sensors)
+    object MovieDetails : Screen("movie_details/{movieId}", "Movie Details", Icons.Filled.Info, Icons.Outlined.Info) {
+        fun createRoute(movieId: Long) = "movie_details/$movieId"
+    }
 }
 
 val bottomNavScreens = listOf(

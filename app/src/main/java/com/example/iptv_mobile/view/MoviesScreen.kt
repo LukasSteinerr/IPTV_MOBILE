@@ -32,16 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
+import androidx.navigation.NavHostController
 
 import com.example.iptv_mobile.model.Category
 import com.example.iptv_mobile.model.Movie
 import com.example.iptv_mobile.model.Playlist
+import com.example.iptv_mobile.navigation.Screen
 import com.example.iptv_mobile.viewmodel.PlaylistViewModel
 
 @Composable
 fun MoviesScreen(
     playlist: Playlist,
-    playlistViewModel: PlaylistViewModel
+    playlistViewModel: PlaylistViewModel,
+    navController: NavHostController
 ) {
     var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
     var featuredMovies by remember { mutableStateOf<List<Movie>>(emptyList()) }
@@ -100,7 +103,7 @@ fun MoviesScreen(
             Column(modifier = Modifier.verticalScroll(scrollState)) {
                 // --- Featured Movie Section (LazyRow) ---
                 if (featuredMovies.isNotEmpty()) {
-                    FeaturedSection(movies = featuredMovies)
+                    FeaturedSection(movies = featuredMovies, navController = navController)
                 }
 
                 Spacer(Modifier.height(20.dp))
@@ -108,7 +111,7 @@ fun MoviesScreen(
                 categories.forEach { category ->
                     val movies = moviesByCategory[category.id] ?: emptyList()
                     if (movies.isNotEmpty()) {
-                        MovieCategoryRow(title = category.name, movies = movies)
+                        MovieCategoryRow(title = category.name, movies = movies, navController = navController)
                         Spacer(Modifier.height(20.dp))
                     }
                 }
@@ -120,7 +123,7 @@ fun MoviesScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FeaturedSection(movies: List<Movie>) {
+fun FeaturedSection(movies: List<Movie>, navController: NavHostController) {
     val lazyListState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
 
@@ -138,6 +141,9 @@ fun FeaturedSection(movies: List<Movie>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(0.75f) // Make it longer vertically (taller than wide)
+                    .clickable {
+                        navController.navigate(Screen.MovieDetails.createRoute(movies[page].id))
+                    }
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(movies[page].coverUrl),
@@ -156,7 +162,7 @@ fun FeaturedSection(movies: List<Movie>) {
 }
 
 @Composable
-fun MovieCategoryRow(title: String, movies: List<Movie>) {
+fun MovieCategoryRow(title: String, movies: List<Movie>, navController: NavHostController) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -191,6 +197,9 @@ fun MovieCategoryRow(title: String, movies: List<Movie>) {
                     modifier = Modifier
                         .width(120.dp)
                         .height(160.dp)
+                        .clickable {
+                            navController.navigate(Screen.MovieDetails.createRoute(movie.id))
+                        }
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),

@@ -86,6 +86,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 debugImplementation("io.objectbox:objectbox-android-objectbrowser:4.3.1")
     releaseImplementation("io.objectbox:objectbox-android:4.3.1")
+    implementation("androidx.compose.material3:material3:1.3.0")
+implementation("io.coil-kt:coil-compose:2.6.0")
+implementation("androidx.compose.foundation:foundation:1.7.0")
+implementation("androidx.compose.ui:ui:1.7.0")
+implementation("androidx.compose.ui:ui-tooling-preview:1.7.0")
+implementation("androidx.compose.material:material-icons-extended:1.7.0")
+
 }
 
 apply(plugin = "io.objectbox")

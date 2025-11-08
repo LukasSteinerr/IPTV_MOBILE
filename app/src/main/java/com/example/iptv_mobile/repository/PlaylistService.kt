@@ -173,4 +173,10 @@ class PlaylistService {
             movieBox.query(Movie_.categoryId.equal(categoryId)).build().find()
         }
     }
+
+    suspend fun getMovieById(movieId: Long): Movie? {
+        return withContext(Dispatchers.IO) {
+            movieBox.get(movieId)
+        }
+    }
 }

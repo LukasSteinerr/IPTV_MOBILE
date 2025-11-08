@@ -23,10 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.iptv_mobile.navigation.Screen
 
 import com.example.iptv_mobile.model.Playlist
@@ -35,9 +37,10 @@ import com.example.iptv_mobile.viewmodel.PlaylistViewModel
 @Composable
 fun AppContentScreen(
     playlists: List<Playlist>,
-    playlistViewModel: PlaylistViewModel
+    playlistViewModel: PlaylistViewModel,
+    navController: NavHostController
 ) {
-    val navController = rememberNavController()
+    val appContentNavController = rememberNavController()
     val selectedPlaylist = playlists.firstOrNull() // Or however you want to select the playlist
 
     Column(
@@ -50,15 +53,16 @@ fun AppContentScreen(
         Spacer(Modifier.height(12.dp))
 
         // --- Tabs and Search Icon ---
-        TopAppBar(navController = navController)
+        TopAppBar(navController = appContentNavController)
 
         Spacer(Modifier.height(16.dp))
 
         if (selectedPlaylist != null) {
             AppContentNavHost(
-                navController = navController,
+                navController = appContentNavController,
                 playlist = selectedPlaylist,
-                playlistViewModel = playlistViewModel
+                playlistViewModel = playlistViewModel,
+                mainNavController = navController
             )
         } else {
             // Handle case where there are no playlists
@@ -109,7 +113,8 @@ fun TopAppBar(navController: NavHostController) {
 fun AppContentNavHost(
     navController: NavHostController,
     playlist: Playlist,
-    playlistViewModel: PlaylistViewModel
+    playlistViewModel: PlaylistViewModel,
+    mainNavController: NavHostController
 ) {
     NavHost(
         navController = navController,
@@ -118,7 +123,8 @@ fun AppContentNavHost(
         composable(Screen.Movies.route) {
             MoviesScreen(
                 playlist = playlist,
-                playlistViewModel = playlistViewModel
+                playlistViewModel = playlistViewModel,
+                navController = mainNavController
             )
         }
         composable(Screen.TvShows.route) { TvShowsScreen() }

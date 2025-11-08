@@ -26,19 +26,21 @@ fun MainContentScreen(
     playlists: List<Playlist>,
     playlistViewModel: PlaylistViewModel,
     selectedPlaylist: Playlist?,
-    onPlaylistClick: (Playlist) -> Unit
+    onPlaylistClick: (Playlist) -> Unit,
+    navController: NavHostController
 ) {
-    val navController = rememberNavController()
+    val bottomNavController = rememberNavController()
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController) }
+        bottomBar = { BottomNavigationBar(navController = bottomNavController) }
     ) { paddingValues ->
         MainContentNavHost(
-            navController = navController,
+            navController = bottomNavController,
             modifier = Modifier.padding(paddingValues),
             playlists = playlists,
             playlistViewModel = playlistViewModel,
             selectedPlaylist = selectedPlaylist,
-            onPlaylistClick = onPlaylistClick
+            onPlaylistClick = onPlaylistClick,
+            mainNavController = navController
         )
     }
 }
@@ -88,7 +90,8 @@ fun MainContentNavHost(
     playlists: List<Playlist>,
     playlistViewModel: PlaylistViewModel,
     selectedPlaylist: Playlist?,
-    onPlaylistClick: (Playlist) -> Unit
+    onPlaylistClick: (Playlist) -> Unit,
+    mainNavController: NavHostController
 ) {
     NavHost(
         navController = navController,
@@ -98,7 +101,8 @@ fun MainContentNavHost(
         composable(Screen.Home.route) {
             AppContentScreen(
                 playlists = playlists,
-                playlistViewModel = playlistViewModel
+                playlistViewModel = playlistViewModel,
+                navController = mainNavController
             )
         }
         composable(Screen.Downloads.route) { DownloadsScreen() }

@@ -60,4 +60,8 @@ class PlaylistViewModel(private val playlistService: PlaylistService) : ViewMode
     suspend fun getMoviesForCategory(categoryId: Long): List<Movie> {
         return playlistService.getMoviesForCategory(categoryId)
     }
+
+    suspend fun getMovieById(movieId: Long): Movie? {
+        return playlistService.getMovieById(movieId)
+    }
 }
