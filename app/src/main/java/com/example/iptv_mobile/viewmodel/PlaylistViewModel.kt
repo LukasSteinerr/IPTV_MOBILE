@@ -8,6 +8,8 @@ import com.example.iptv_mobile.repository.PlaylistService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.example.iptv_mobile.model.Category
+import com.example.iptv_mobile.model.Movie
 
 class PlaylistViewModel(private val playlistService: PlaylistService) : ViewModel() {
     val isLoading = mutableStateOf(false)
@@ -49,5 +51,13 @@ class PlaylistViewModel(private val playlistService: PlaylistService) : ViewMode
             playlistService.clearDatabase()
             loadPlaylists() // Refresh navigation state after clearing
         }
+    }
+
+    suspend fun getCategoriesForPlaylist(playlistId: Long): List<Category> {
+        return playlistService.getCategoriesForPlaylist(playlistId)
+    }
+
+    suspend fun getMoviesForCategory(categoryId: Long): List<Movie> {
+        return playlistService.getMoviesForCategory(categoryId)
     }
 }

@@ -29,9 +29,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.iptv_mobile.navigation.Screen
 
+import com.example.iptv_mobile.model.Playlist
+import com.example.iptv_mobile.viewmodel.PlaylistViewModel
+
 @Composable
-fun AppContentScreen() {
+fun AppContentScreen(
+    playlists: List<Playlist>,
+    playlistViewModel: PlaylistViewModel
+) {
     val navController = rememberNavController()
+    val selectedPlaylist = playlists.firstOrNull() // Or however you want to select the playlist
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +54,15 @@ fun AppContentScreen() {
 
         Spacer(Modifier.height(16.dp))
 
-        AppContentNavHost(navController = navController)
+        if (selectedPlaylist != null) {
+            AppContentNavHost(
+                navController = navController,
+                playlist = selectedPlaylist,
+                playlistViewModel = playlistViewModel
+            )
+        } else {
+            // Handle case where there are no playlists
+        }
     }
 }
 
@@ -90,12 +106,21 @@ fun TopAppBar(navController: NavHostController) {
 }
 
 @Composable
-fun AppContentNavHost(navController: NavHostController) {
+fun AppContentNavHost(
+    navController: NavHostController,
+    playlist: Playlist,
+    playlistViewModel: PlaylistViewModel
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.Movies.route
     ) {
-        composable(Screen.Movies.route) { MoviesScreen() }
+        composable(Screen.Movies.route) {
+            MoviesScreen(
+                playlist = playlist,
+                playlistViewModel = playlistViewModel
+            )
+        }
         composable(Screen.TvShows.route) { TvShowsScreen() }
         composable(Screen.LiveTv.route) { LiveTvScreen() }
     }

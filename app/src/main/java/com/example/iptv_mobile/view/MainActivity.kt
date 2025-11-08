@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         false -> {
                             MainContentScreen(
                                 playlists = playlists,
-                                playlistService = playlistService,
+                                playlistViewModel = playlistViewModel,
                                 selectedPlaylist = selectedPlaylist,
                                 onPlaylistClick = { playlist ->
                                     selectedPlaylist = playlist

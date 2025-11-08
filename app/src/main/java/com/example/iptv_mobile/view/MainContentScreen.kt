@@ -19,11 +19,12 @@ import com.example.iptv_mobile.navigation.Screen
 import com.example.iptv_mobile.navigation.bottomNavScreens
 import com.example.iptv_mobile.model.Playlist
 import com.example.iptv_mobile.repository.PlaylistService
+import com.example.iptv_mobile.viewmodel.PlaylistViewModel
 
 @Composable
 fun MainContentScreen(
     playlists: List<Playlist>,
-    playlistService: PlaylistService,
+    playlistViewModel: PlaylistViewModel,
     selectedPlaylist: Playlist?,
     onPlaylistClick: (Playlist) -> Unit
 ) {
@@ -35,7 +36,7 @@ fun MainContentScreen(
             navController = navController,
             modifier = Modifier.padding(paddingValues),
             playlists = playlists,
-            playlistService = playlistService,
+            playlistViewModel = playlistViewModel,
             selectedPlaylist = selectedPlaylist,
             onPlaylistClick = onPlaylistClick
         )
@@ -85,7 +86,7 @@ fun MainContentNavHost(
     navController: NavHostController,
     modifier: Modifier,
     playlists: List<Playlist>,
-    playlistService: PlaylistService,
+    playlistViewModel: PlaylistViewModel,
     selectedPlaylist: Playlist?,
     onPlaylistClick: (Playlist) -> Unit
 ) {
@@ -94,7 +95,12 @@ fun MainContentNavHost(
         startDestination = Screen.Home.route,
         modifier = modifier
     ) {
-        composable(Screen.Home.route) { AppContentScreen() }
+        composable(Screen.Home.route) {
+            AppContentScreen(
+                playlists = playlists,
+                playlistViewModel = playlistViewModel
+            )
+        }
         composable(Screen.Downloads.route) { DownloadsScreen() }
         composable(Screen.MyList.route) { FavoritesScreen() }
         composable(Screen.Settings.route) { SettingsScreen() }

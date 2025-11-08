@@ -161,4 +161,16 @@ class PlaylistService {
     fun hasPlaylists(): Boolean {
         return playlistBox.count() > 0
     }
+
+    suspend fun getCategoriesForPlaylist(playlistId: Long): List<Category> {
+        return withContext(Dispatchers.IO) {
+            categoryBox.query(Category_.playlistId.equal(playlistId)).build().find()
+        }
+    }
+
+    suspend fun getMoviesForCategory(categoryId: Long): List<Movie> {
+        return withContext(Dispatchers.IO) {
+            movieBox.query(Movie_.categoryId.equal(categoryId)).build().find()
+        }
+    }
 }

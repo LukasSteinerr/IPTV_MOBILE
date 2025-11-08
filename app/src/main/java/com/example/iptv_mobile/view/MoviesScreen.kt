@@ -31,58 +31,100 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.launch
+
+import com.example.iptv_mobile.model.Category
+import com.example.iptv_mobile.model.Movie
+import com.example.iptv_mobile.model.Playlist
+import com.example.iptv_mobile.viewmodel.PlaylistViewModel
 
 @Composable
-fun MoviesScreen() {
-    val scrollState = rememberScrollState()
+fun MoviesScreen(
+    playlist: Playlist,
+    playlistViewModel: PlaylistViewModel
+) {
+    var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
+    var featuredMovies by remember { mutableStateOf<List<Movie>>(emptyList()) }
+    var moviesByCategory by remember { mutableStateOf<Map<Long, List<Movie>>>(emptyMap()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(playlist.id) {
+        coroutineScope.launch {
+            try {
+                categories = playlistViewModel.getCategoriesForPlaylist(playlist.id)
+                    .filter { it.isMovie }
+
+                val movieMap = mutableMapOf<Long, List<Movie>>()
+                val allMovies = mutableListOf<Movie>()
+
+                categories.forEach { category ->
+                    val movies = playlistViewModel.getMoviesForCategory(category.id).sortedByDescending { it.added }
+                    movieMap[category.id] = movies
+                    allMovies.addAll(movies)
+                }
+
+                moviesByCategory = movieMap
+
+                featuredMovies = allMovies.filter { it.isFeatured }.take(5).ifEmpty {
+                    allMovies.take(5)
+                }
+
+                isLoading = false
+            } catch (e: Exception) {
+                isLoading = false
+                // Handle error
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .verticalScroll(scrollState)
     ) {
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 4.dp,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
+        } else {
+            val scrollState = rememberScrollState()
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                // --- Featured Movie Section (LazyRow) ---
+                if (featuredMovies.isNotEmpty()) {
+                    FeaturedSection(movies = featuredMovies)
+                }
 
-        // --- Featured Movie Section (LazyRow) ---
-        FeaturedSection()
+                Spacer(Modifier.height(20.dp))
 
-        Spacer(Modifier.height(20.dp))
-
-        // --- Continue Watch Section ---
-        MovieCategoryRow(title = "Continue Watch")
-
-        Spacer(Modifier.height(20.dp))
-
-        // --- New Movies Section ---
-        MovieCategoryRow(title = "New Movies")
-
-        Spacer(Modifier.height(20.dp))
-
-        // --- Action Section ---
-        MovieCategoryRow(title = "Action")
-
-        Spacer(Modifier.height(20.dp))
-
-        // --- Fantasy Section ---
-        MovieCategoryRow(title = "Fantasy")
-
-        Spacer(Modifier.weight(1f))
+                categories.forEach { category ->
+                    val movies = moviesByCategory[category.id] ?: emptyList()
+                    if (movies.isNotEmpty()) {
+                        MovieCategoryRow(title = category.name, movies = movies)
+                        Spacer(Modifier.height(20.dp))
+                    }
+                }
+            }
+        }
     }
 }
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FeaturedSection() {
-    val featuredUrls = listOf(
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kdkk7OBnIL1peW2zwcAAp6O54Jo.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/slKAbvY2CjAIyJFqoLSh1WICzg6.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/pHpq9yNUIo6aDoCXEBzjSolywgz.jpg"
-    )
-
+fun FeaturedSection(movies: List<Movie>) {
     val lazyListState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
 
-    val pagerState = rememberPagerState(pageCount = { featuredUrls.size })
+    val pagerState = rememberPagerState(pageCount = { movies.size })
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalPager(
@@ -98,7 +140,7 @@ fun FeaturedSection() {
                     .aspectRatio(0.75f) // Make it longer vertically (taller than wide)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(featuredUrls[page]),
+                    painter = rememberAsyncImagePainter(movies[page].coverUrl),
                     contentDescription = "Featured Movie",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
@@ -107,23 +149,14 @@ fun FeaturedSection() {
         }
         Spacer(Modifier.height(16.dp))
         PageIndicator(
-            numberOfPages = featuredUrls.size,
+            numberOfPages = movies.size,
             selectedPage = pagerState.currentPage
         )
     }
 }
 
 @Composable
-fun MovieCategoryRow(title: String) {
-    // Using placeholder URLs for images. In a real app, this list would be fetched based on the title/category.
-    val movieUrls = listOf(
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/5Gr4amaB1xxeYAEMOdrVutaWwgz.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/q8dWfc4JwQuv3HayIZeO84jAXED.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/ecflk7AZf0ij205yDswjlvdxlCO.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
-        "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kdkk7OBnIL1peW2zwcAAp6O54Jo.jpg"
-    )
-
+fun MovieCategoryRow(title: String, movies: List<Movie>) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -138,7 +171,7 @@ fun MovieCategoryRow(title: String) {
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(movieUrls) { url ->
+            items(movies) { movie ->
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
@@ -150,7 +183,7 @@ fun MovieCategoryRow(title: String) {
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            painter = rememberAsyncImagePainter(url),
+                            painter = rememberAsyncImagePainter(movie.coverUrl),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
